@@ -1,0 +1,36 @@
+{
+  "name": "voidpaste",
+  "version": "1.0.0",
+  "description": "copy paste bin",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rayan-1005/voidpaste.git"
+  },
+  "keywords": [
+    "voidpaste",
+    "pastebin",
+    "copy",
+    "paste",
+    "terminal"
+  ],
+  "author": "Rayan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rayan-1005/voidpaste/issues"
+  },
+  "homepage": "https://github.com/rayan-1005/voidpaste#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
