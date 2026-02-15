@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoidPaste</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="assets/Favicon.png">
+    <style>
+        :root {
+            --base: #1e1e2e;
+            --mantle: #181825;
+            --surface0: #313244;
+            --surface1: #45475a;
+            --text: #cdd6f4;
+            --subtext: #6c7086;
+            --teal: #94e2d5;
+            --teal-dim: rgba(148, 226, 213, .12);
+            --border: #313244;
+            --blue: #89b4fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--base);
+            color: var(--text);
+            font-family: "Space Grotesk", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+
+        header {
+            background: var(--mantle);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            color: var(--blue);
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .header-inner {
+            max-width: 900px;
+            margin: auto;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Main */
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            width: 100%;
+            padding: 0 16px;
+        }
+
+        /* Title input */
+
+        input.title {
+            width: 100%;
+            background: var(--mantle);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: "JetBrains Mono", monospace;
+            margin-bottom: 12px;
+        }
+
+        /* Editor */
+
+        .editor {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--mantle);
+        }
+
+        .lines {
+            padding: 12px;
+            background: rgba(49, 50, 68, .2);
+            color: var(--subtext);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 13px;
+            text-align: right;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            padding: 12px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 13px;
+            resize: none;
+            min-height: 400px;
+            outline: none;
+        }
+
+        /* Controls */
+
+        .controls {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        select {
+            background: var(--mantle);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px;
+            border-radius: 6px;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        button {
+            background: var(--blue);
+            color: var(--base);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        /* Footer */
+
+        footer {
+            margin-top: auto;
+            padding: 16px;
+            text-align: center;
+            color: var(--subtext);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo" style="display:flex;align-items:center;gap:8px;">
+                <img src="/assets/Favicon.png" alt="VoidPaste" style="height:28px;">
+                <span>VoidPaste</span>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+
+        <input class="title" id="title" placeholder="Untitled">
+
+        <div class="editor">
+
+            <div class="lines" id="lines">1</div>
+
+            <textarea id="content" placeholder="// paste here"></textarea>
+
+        </div>
+
+        <div class="controls">
+
+            <select id="expires">
+                <option value="">Never expires</option>
+                <option value="600">10 minutes</option>
+                <option value="3600">1 hour</option>
+                <option value="86400">1 day</option>
+                <option value="604800">1 week</option>
+            </select>
+
+            <button onclick="createPaste()">Create Paste</button>
+
+        </div>
+
+    </main>
+
+    <footer>
+        voidpaste — your code, the void remembers
+    </footer>
+
+    <script>
+
+        const textarea = document.getElementById("content");
+        const lines = document.getElementById("lines");
+
+        textarea.addEventListener("input", () => {
+            const count = textarea.value.split("\n").length;
+            lines.innerHTML = Array.from({ length: count }, (_, i) => i + 1).join("<br>");
+        });
+
+        async function createPaste() {
+
+            const content = textarea.value;
+
+            if (!content.trim()) {
+                alert("Paste is empty");
+                return;
+            }
+
+            const title = document.getElementById("title").value;
+            const expires_in = document.getElementById("expires").value;
+        }
+        const res = await fetch("/paste", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content,
+                title,
+                expires_in,
+                view_once
+            })
+        });
+
+        const data = await res.json();
+
+        window.location = "/view/" + data.pasteId;
+
+
+    </script>
+
+</body>
+
+</html>

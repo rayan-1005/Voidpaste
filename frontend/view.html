@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoidPaste</title>
+  <link rel="icon" type="image/png" href="/assets/Favicon.png">
+
+  <style>
+    :root {
+      --base: #1e1e2e;
+      --mantle: #181825;
+      --surface0: #313244;
+      --surface1: #45475a;
+      --text: #cdd6f4;
+      --subtext: #6c7086;
+      --blue: #89b4fa;
+      --teal: #94e2d5;
+    }
+
+    body {
+      margin: 0;
+      background: var(--base);
+      color: var(--text);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    /* Top bar */
+
+    .nav {
+      background: var(--mantle);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--surface0);
+    }
+
+    .logo {
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 18px;
+      padding: 4px 8px;
+    }
+
+    .actions button {
+      background: var(--surface0);
+      color: var(--text);
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .actions button:hover {
+      background: var(--surface1);
+    }
+
+    /* Container */
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      border: 1px solid var(--surface0);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Header */
+
+    .header {
+      background: var(--mantle);
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--surface0);
+    }
+
+    .pasteinfo {
+      color: var(--blue);
+    }
+
+    .copybtn {
+      background: var(--blue);
+      color: var(--base);
+      border: none;
+      padding: 4px 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .copybtn:hover {
+      opacity: .9;
+    }
+
+    /* Code */
+
+    .codeblock {
+      padding: 20px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .line {
+      display: grid;
+      grid-template-columns: 50px 1fr;
+    }
+
+    .number {
+      text-align: right;
+      padding-right: 12px;
+      color: var(--subtext);
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .content {
+      white-space: pre;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="nav">
+
+    <div class="logo" style="display:flex;align-items:center;gap:8px;">
+      <img src="/assets/Favicon.png" alt="VoidPaste" style="height:28px;">
+      <span>VoidPaste</span>
+    </div>
+
+
+    <div class="actions">
+      <button onclick="copyLink()">Copy Link</button>
+      <button onclick="newPaste()">New Paste</button>
+    </div>
+
+  </div>
+
+  <div class="container">
+
+    <div class="header">
+
+      <div>
+
+        <div id="title" style="color:var(--blue);
+           font-weight:bold;
+            font-size:18px;
+          "></div>
+
+        <div id="meta" style="
+        font-size:12px;
+        margin-top: 4px;
+        color:var(--subtext)
+        "></div>
+
+      </div>
+
+      <button onclick="copyLink()" class="copybtn" id="copyBtn">
+        Copy
+      </button>
+
+    </div>
+
+
+    <div id="code" class="codeblock"></div>
+
+  </div>
+
+  <script>
+
+    const pasteId = window.location.pathname.split("/").pop();
+
+    fetch("/paste/" + pasteId, {
+      headers: {
+        "Accept": "application/json"
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+
+        // Show title
+        const titleEl = document.getElementById("title");
+        if (titleEl) {
+          titleEl.textContent = data.title || "Untitled Paste";
+        }
+        console.log(data);
+        // Show metadata
+        const metaEl = document.getElementById("meta");
+        if (metaEl) {
+
+          let meta = pasteId + " • Created " + timeAgo(data.created_at);
+
+          if (data.expires_at) {
+            meta += " • Expires " + timeAgo(data.expires_at);
+          }
+
+          if (data.view_once) {
+            meta += " • View-once paste";
+          }
+
+          metaEl.textContent = meta;
+        }
+
+        // Render code
+        const codeDiv = document.getElementById("code");
+
+        const lines = data.content.replace(/\n$/, "").split("\n");
+
+
+        codeDiv.innerHTML = lines.map((line, i) => `
+<div class="line">
+<div class="number">${i + 1}</div>
+<div class="content">${escapeHtml(line)}</div>
+</div>
+`).join("");
+
+      });
+    function timeAgo(date) {
+
+      if (!date) return "";
+
+      const seconds = Math.floor(
+        (new Date() - new Date(date)) / 1000
+      );
+
+      if (seconds < 60) return seconds + "s ago";
+
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return minutes + "m ago";
+
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return hours + "h ago";
+
+      const days = Math.floor(hours / 24);
+      return days + "d ago";
+
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function copyLink() {
+
+      navigator.clipboard.writeText(window.location.href);
+
+      const btn = document.getElementById("copyBtn");
+
+      btn.textContent = "Copied";
+
+      setTimeout(() => {
+        btn.textContent = "Copy";
+      }, 1500);
+
+    }
+
+    function newPaste() {
+      window.location.href = "/new.html";
+    }
+
+  </script>
+
+</body>
+
+</html>
