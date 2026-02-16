@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VoidPaste</title>
 
     <link
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="assets/Favicon.png">
+        rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="assets/Favicon.png" />
     <style>
         :root {
             --base: #1e1e2e;
@@ -19,7 +19,7 @@
             --text: #cdd6f4;
             --subtext: #6c7086;
             --teal: #94e2d5;
-            --teal-dim: rgba(148, 226, 213, .12);
+            --teal-dim: rgba(148, 226, 213, 0.12);
             --border: #313244;
             --blue: #89b4fa;
         }
@@ -95,7 +95,7 @@
 
         .lines {
             padding: 12px;
-            background: rgba(49, 50, 68, .2);
+            background: rgba(49, 50, 68, 0.2);
             color: var(--subtext);
             font-family: "JetBrains Mono", monospace;
             font-size: 13px;
@@ -146,7 +146,7 @@
         }
 
         button:hover {
-            opacity: .9;
+            opacity: 0.9;
         }
 
         /* Footer */
@@ -160,35 +160,28 @@
             font-size: 12px;
         }
     </style>
-
 </head>
 
 <body>
-
     <header>
         <div class="header-inner">
-            <div class="logo" style="display:flex;align-items:center;gap:8px;">
-                <img src="/assets/Favicon.png" alt="VoidPaste" style="height:28px;">
+            <div class="logo" style="display: flex; align-items: center; gap: 8px">
+                <img src="/assets/Favicon.png" alt="VoidPaste" style="height: 28px" />
                 <span>VoidPaste</span>
             </div>
-
         </div>
     </header>
 
     <main>
-
-        <input class="title" id="title" placeholder="Untitled">
+        <input class="title" id="title" placeholder="Untitled" />
 
         <div class="editor">
-
             <div class="lines" id="lines">1</div>
 
             <textarea id="content" placeholder="// paste here"></textarea>
-
         </div>
 
         <div class="controls">
-
             <select id="expires">
                 <option value="">Never expires</option>
                 <option value="600">10 minutes</option>
@@ -198,28 +191,24 @@
             </select>
 
             <button onclick="createPaste()">Create Paste</button>
-
         </div>
-
     </main>
 
-    <footer>
-        voidpaste — your code, the void remembers
-    </footer>
+    <footer>voidpaste — your code, the void remembers</footer>
 
     <script>
-
         const API_BASE = "https://voidpaste.onrender.com";
         const textarea = document.getElementById("content");
         const lines = document.getElementById("lines");
 
         textarea.addEventListener("input", () => {
             const count = textarea.value.split("\n").length;
-            lines.innerHTML = Array.from({ length: count }, (_, i) => i + 1).join("<br>");
+            lines.innerHTML = Array.from({ length: count }, (_, i) => i + 1).join(
+                "<br>",
+            );
         });
 
         async function createPaste() {
-
             const content = textarea.value;
 
             if (!content.trim()) {
@@ -229,27 +218,25 @@
 
             const title = document.getElementById("title").value;
             const expires_in = document.getElementById("expires").value;
+
+            const res = await fetch(API_BASE + "/paste", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    content,
+                    title,
+                    expires_in,
+                    view_once: false,
+                }),
+            });
+
+            const data = await res.json();
+
+            window.location = API_BASE + "/view/" + data.pasteId;
         }
-        const res = await fetch(API_BASE + "/paste", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                content,
-                title,
-                expires_in,
-                view_once: false
-            })
-        });
-
-        const data = await res.json();
-
-        window.location = API_BASE + "/view/" + data.pasteId;
-
-
     </script>
-
 </body>
 
 </html>
