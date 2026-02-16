@@ -173,8 +173,8 @@
   <script>
 
     const pasteId = window.location.pathname.split("/").pop();
-
-    fetch("/paste/" + pasteId, {
+    const API_BASE = "https://voidpaste.onrender.com";
+    fetch(API_BASE + "/paste/" + pasteId, {
       headers: {
         "Accept": "application/json"
       },

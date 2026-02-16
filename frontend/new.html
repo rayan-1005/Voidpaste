@@ -229,7 +229,8 @@
             const title = document.getElementById("title").value;
             const expires_in = document.getElementById("expires").value;
         }
-        const res = await fetch("/paste", {
+        const API_BASE = "https://voidpaste.onrender.com";
+        const res = await fetch(API_BASE + "/paste", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -238,7 +239,7 @@
                 content,
                 title,
                 expires_in,
-                view_once
+                view_once: false
             })
         });
 
