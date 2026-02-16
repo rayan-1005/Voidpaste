@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 dotenv.config();
-
+import cors from "cors";
 import router from "./routes/routes.paste.js";
 import { deleteExpiredPastes } from "./controllers/controller.paste.js";
 
@@ -10,6 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+
+app.use(cors());
 
 // mount paste routes
 app.use("/paste", router);

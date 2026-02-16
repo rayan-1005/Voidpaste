@@ -7,21 +7,21 @@ It allows you to create, share, and manage text pastes with expiration
 and view‑once support. Designed with a sleek Catppuccin Mocha theme and
 lightweight architecture.
 
-------------------------------------------------------------------------
+---
 
 ## Features
 
--   Create and share text pastes instantly
--   Unique short ID per paste
--   Clean browser viewer
--   Raw text access via curl
--   Expiration support
--   View‑once pastes
--   Copy link button
--   Persistent storage using Supabase
--   Lightweight frontend
+- Create and share text pastes instantly
+- Unique short ID per paste
+- Clean browser viewer
+- Raw text access via curl
+- Expiration support
+- View‑once pastes
+- Copy link button
+- Persistent storage using Supabase
+- Lightweight frontend
 
-------------------------------------------------------------------------
+---
 
 ## Installation
 
@@ -49,7 +49,7 @@ Open:
 
 http://localhost:5000
 
-------------------------------------------------------------------------
+---
 
 ## Usage
 
@@ -59,13 +59,13 @@ http://localhost:5000
 
 View paste:
 
-http://localhost:5000/view/`<pasteId>`{=html}
+http://localhost:5000/view/`<pasteId>`
 
 Example:
 
 http://localhost:5000/view/zRTKh
 
-------------------------------------------------------------------------
+---
 
 ## curl API Usage
 
@@ -86,7 +86,7 @@ Fetch paste JSON:
 
 curl -H "Accept: application/json" http://localhost:5000/paste/abc12
 
-------------------------------------------------------------------------
+---
 
 ## Database Schema
 
@@ -101,7 +101,7 @@ created_at TIMESTAMP\
 expires_at TIMESTAMP\
 view_once BOOLEAN
 
-------------------------------------------------------------------------
+---
 
 ## Architecture
 
@@ -113,27 +113,27 @@ API interface:
 
 /paste/:id → raw text or JSON
 
-------------------------------------------------------------------------
+---
 
 ## Future Development
 
--   Raw endpoint
--   Download endpoint
--   Password protection
--   Private pastes
--   Syntax highlighting
--   User accounts
--   CLI client
--   Docker deployment
--   Public paste listing
--   Search
+- Raw endpoint
+- Download endpoint
+- Password protection
+- Private pastes
+- Syntax highlighting
+- User accounts
+- CLI client
+- Docker deployment
+- Public paste listing
+- Search
 
-------------------------------------------------------------------------
+---
 
 ## License
 
 MIT License
 
-------------------------------------------------------------------------
+---
 
 VoidPaste --- your code, the void remembers.
