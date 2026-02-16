@@ -209,6 +209,7 @@
 
     <script>
 
+        const API_BASE = "https://voidpaste.onrender.com";
         const textarea = document.getElementById("content");
         const lines = document.getElementById("lines");
 
@@ -229,7 +230,6 @@
             const title = document.getElementById("title").value;
             const expires_in = document.getElementById("expires").value;
         }
-        const API_BASE = "https://voidpaste.onrender.com";
         const res = await fetch(API_BASE + "/paste", {
             method: "POST",
             headers: {
