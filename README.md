@@ -27,7 +27,7 @@ lightweight architecture.
 
 Clone:
 
-git clone https://github.com/yourusername/voidpaste.git
+git clone https://github.com/rayan-1005/voidpaste.git
 
 cd voidpaste/backend
 
